@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<title>Control Panel</title>
+<script src="js/jquery-1.10.2.js"></script>	
+<script src="js/jquery-ui-1.10.4.custom.min.js"></script>	
+<script src="js/jquery.knob.js"></script>	
+<link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" href="css/start/jquery-ui-1.10.4.custom.min.css">
+<script type="text/javascript">
+ $(function() {
+    // setup L master volume
+    $( "#master" ).slider({
+		value: 0,
+		min: 0,
+		max: 100,
+		orientation: "horizontal",
+		range: "min",
+		animate: true,
+		slide: function(event, ui) {
+			$.get("cgi-bin/pytest.py");
+			$("#masterdebug").append($("#master").slider("value"));
+		},
+		change: function(event, ui) {
+			$.get("cgi-bin/amixer?m="+$("#master").slider("value"));
+		},
+		create: function(event, ui) {
+			$.get("cgi-bin/amixer?g", function(text) {
+				$("#master").slider("value", text);
+			});
+		}
+    });
+
+	// setup balance
+    $( "#balance" ).slider({
+	value: 50,
+	orientation: "horizontal",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
+		$("#balancedebug").append($("#balance").slider("value"));
+	}
+    });
+	
+    // setup graphic EQ
+    $( "#eq > span" ).each(function() {
+      // read initial values from markup and remove that
+      var value = parseInt( $( this ).text(), 10 );
+      $( this ).empty().slider({
+        value: value,
+	min: 0,
+	max: 100,
+        range: "min",
+        animate: true,
+        orientation: "vertical",
+	slide: function(event, ui){ 
+		$.get("cgi-bin/equal?eq1="+$("#eq1")+"&?eq2="+$("#eq2")+"&?eq3="+$("#eq3")+"&?eq4="+$("#eq4")+"&?eq5="+$("#eq5")+"&?eq6="+$("#eq6"));
+		$("#eqdebug").append($("#eq1").slider("value"));
+		$("#eqdebug").append($("#eq2").slider("value"));
+		$("#eqdebug").append(" ");
+	}
+      });
+    });
+	// setup gain
+    $( "#gain > span" ).each(function() {
+      // read initial values from markup and remove that
+      var value = parseInt( $( this ).text(), 10 );
+      $( this ).empty().slider({
+        value: value,
+        range: "min",
+        animate: true,
+        orientation: "vertical"
+      });
+    });
+  });
+</script>
+</head>
+<body>
+<div id="wrapper">
+		<!-- Channel selection -->
+		<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
+		  <span class="ui-icon ui-icon-bullet" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Channel selection
+		</p>
+		<div id="channel_knob">
+			<input class="cs_knob" value="1" data-skin="tron" > 
+		</div>
+
+		<!-- Master volume -->
+		<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
+		  <span class="ui-icon ui-icon-volume-on" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Master volume
+		</p>
+		
+		<div id="master" class="hslider"></div>
+
+		<!-- Balance -->
+		<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
+		  <span class="ui-icon ui-icon-arrow-2-e-w" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Balance
+		</p>
+		
+		<div id="balance_wrapper">
+			<div id="lb_label">L</div>
+			<div id="balance" class="hslider"></div>
+			<div id="rb_label">R</div>
+			<div class="clear"></div>
+		</div>
+		
+		<!-- Equalizer -->
+		<p class="ui-state-default ui-corner-all" style="padding:4px">
+		  <span class="ui-icon ui-icon-signal" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Equalizer
+		</p>
+		 
+		<div id="eq">
+			<span id="eq1">50</span>
+			<span id="eq2">50</span>
+			<span id="eq3">50</span>
+			<span id="eq4">50</span>
+			<span id="eq5">50</span>
+			<span id="eq6">50</span>
+		</div>
+		<div id="gain">  
+			<span>50</span>
+		</div>
+		<div class="clear"></div>
+		<div id="eq_labels">
+			<span>Low</span>
+			<span>Mid</span>
+			<span>High</span>
+		</div>
+		<div id="gain_labels">
+			<span>Gain</span>
+		</div>
+	<div class="clear"></div>
+	<div>
+	  <p id="debug">Channel:</p>
+	  <p id="balancedebug">Balance:	</p>
+	  <p id="masterdebug">Master:</p>
+	  <p id="eqdebug">Equ:</p>
+	</div>
+</div>
+<script>
+$(".cs_knob").knob({
+min : 1, 
+max : 4, 
+step : 1, 
+angleOffset : -90, 
+angleArc : 180, 
+stopper : true, 
+readOnly : false, 
+cursor : 20,  
+lineCap : 'butt', 
+thickness : '0.22', 
+width : 100, 
+displayInput : true, 
+displayPrevious : true, 
+fgColor : '#0078ae', 
+inputColor : '#0078ae', 
+font : 'Arial', 
+fontWeight : 'bold', 
+bgColor : '#EEEEEE', 
+draw : function () {
+if(this.$.data('skin') == 'tron') {
+var a = this.angle(this.cv)  // Angle
+, sa = this.startAngle          // Previous start angle
+, sat = this.startAngle         // Start angle
+, ea                            // Previous end angle
+, eat = sat + a                 // End angle
+, r = 1;
+this.g.lineWidth = this.lineWidth;
+this.o.cursor
+&& (sat = eat - 0.3)
+&& (eat = eat + 0.3);
+if (this.o.displayPrevious) {
+ea = this.startAngle + this.angle(this.v);
+this.o.cursor
+&& (sa = ea - 0.3)
+&& (ea = ea + 0.3);
+this.g.beginPath();
+this.g.strokeStyle = this.pColor;
+this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sa, ea, false);
+this.g.stroke();
+}
+this.g.beginPath();
+this.g.strokeStyle = r ? this.o.fgColor : this.fgColor ;
+this.g.arc(this.xy, this.xy, this.radius - this.lineWidth, sat, eat, false);
+this.g.stroke();
+this.g.lineWidth = 2;
+this.g.beginPath();
+this.g.strokeStyle = this.o.fgColor;
+this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth * 2 / 3, 0, 2 * Math.PI, false);
+this.g.stroke();
+return false;
+}},
+change : function(v) {
+	$("#debug").append(v);
+}
+});
+</script>
+</body>
+</html>
