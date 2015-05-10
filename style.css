@@ -27,8 +27,14 @@ body {
 }
 
 .vol_label {
+	height:200px;
 	float: left;
 	margin-left: 12px ;
+}
+
+.vol_label2 {
+	float: left;
+	margin-left: 144px ;
 }
 
 #balance_wrapper {

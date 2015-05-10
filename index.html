@@ -11,84 +11,89 @@
 <script type="text/javascript">
  $(function() {
     // setup L master volume
+
     $( "#master_L" ).slider({
-		value: 20,
-		orientation: "horizontal",
-		range: "min",
-		animate: true,
-		stop: function(event, ui) {
-			if($("#lock").prop('checked')) {
+	value: 50,
+	orientation: "horizontal",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_L").slider("value") + "%");
+		if($("#lock").prop('checked')) {
 				$("#master_R").slider("value", $("#master_L").slider("value"));
 			}
-		},
-		slide: function(event, ui) {
-			if($("#lock").prop('checked')) {
-				$("#master_R").slider("value", $("#master_L").slider("value"));
-			}
-		}
+	}
     });
-	
-	// setup R master volume
+
     $( "#master_R" ).slider({
-		value: 20,
-		orientation: "horizontal",
-		range: "min",
-		animate: true,
-		change: function(event, ui) {
-			if($("#lock").prop('checked')) {
+	value: 50,
+	orientation: "horizontal",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_R").slider("value") + "%");
+		if($("#lock").prop('checked')) {
 				$("#master_L").slider("value", $("#master_R").slider("value"));
 			}
-		},
-		slide: function(event, ui) {
-			if($("#lock").prop('checked')) {
-				$("#master_L").slider("value", $("#master_R").slider("value"));
-			}
-		}
+	}
     });
-	
+
 	// setup balance
     $( "#balance" ).slider({
-      value: 50,
-      orientation: "horizontal",
-      range: "min",
-      animate: true
+	value: 50,
+	orientation: "horizontal",
+	range: "min",
+	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
-	}      
+		$("#balancedebug").append($("#balance").slider("value"));
+	}
     });
 	
     // setup graphic EQ
-    $( "#eq > span" ).each(function() {
-      // read initial values from markup and remove that
-      var value = parseInt( $( this ).text(), 10 );
-      $( this ).empty().slider({
-        value: value,
-        range: "min",
-        animate: true,
-        orientation: "vertical"
-	change: function(event, ui){ 
-		$.get("cgi-bin/getcmd.py?eq1="+$("#eq1")+"&?eq2="+$("#eq2")+"&?eq3="+$("#eq3")+"&?eq4="+$("#eq4")+"&?eq5="+$("#eq5")+"&?eq6="+$("#eq6"));
-	}        
-      });
-    });
-	
-	// setup gain
-    $( "#gain > span" ).each(function() {
-      // read initial values from markup and remove that
-      var value = parseInt( $( this ).text(), 10 );
-      $( this ).empty().slider({
-        value: value,
-		min: 0.1,
-		max: 5,
-		step: 0.1,
-        range: "min",
-        animate: true,
-        orientation: "vertical"
+    $( "#eq1" ).slider({
+	value: 87,
+	orientation: "vertical",
+	range: "min",
+	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
-	}         
-      });
+	}
     });
+    $( "#eq2" ).slider({
+	value: 76,
+	orientation: "vertical",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
+	}
+    });
+    $( "#eq3" ).slider({
+	value: 65,
+	orientation: "vertical",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
+	}
+    });
+
+
+	// setup gain
+	$( "#gain" ).slider({
+	value: 1,
+	min: 0.1,
+	max: 5,
+	step: 0.1,
+	orientation: "vertical",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
+	}
+    });
+
   });
 </script>
 </head>
@@ -100,7 +105,7 @@
 		  Channel selection
 		</p>
 		<div id="channel_knob">
-			<input id="cs_knob" value="1" data-skin="tron" > 
+			<input class="cs_knob" value="1" data-skin="tron" > 
 		</div>
 
 		<!-- Master volume -->
@@ -108,16 +113,18 @@
 		  <span class="ui-icon ui-icon-volume-on" style="float:left; margin:-2px 5px 0 0;"></span>
 		  Master volume
 		</p>
+		<span>test</span>
+		<p>test</p>
 		<div id="lock_wrapper">
 			<input id="lock" type="checkbox" checked/>
 			<span style="">Lock</span>
 		</div>
-		
-		<span class="vol_label">Left</span>
+		<div id="masters">
+		<p>Left</p>
 		<div id="master_L" class="hslider"></div>
-		<span class="vol_label">Right</span>
+		<p>Right</p>
 		<div id="master_R" class="hslider"></div>
-		 
+
 		<!-- Balance -->
 		<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
 		  <span class="ui-icon ui-icon-arrow-2-e-w" style="float:left; margin:-2px 5px 0 0;"></span>
@@ -136,16 +143,17 @@
 		  <span class="ui-icon ui-icon-signal" style="float:left; margin:-2px 5px 0 0;"></span>
 		  Equalizer
 		</p>
-		 
+
 		<div id="eq">
-			<span id="eq1">88</span>
-			<span id="eq2">77</span>
-			<span id="eq3">55</span>
+			<span id="eq1" class="vol_label"></span>
+			<span id="eq2" class="vol_label"></span>
+			<span id="eq3" class="vol_label"></span>
+			<p class="vol_label2"></p>
+			<p class="vol_label2"></p>
+			<span id="gain" class="vol_label"></span>
+			<div class="clear"></div>
 		</div>
-		<div id="gain">  
-			<span>1</span>
-		</div>
-		<div class="clear"></div>
+		 
 		<div id="eq_labels">
 			<span>Low</span>
 			<span>Mid</span>
@@ -155,17 +163,20 @@
 			<span>Gain</span>
 		</div>
 	<div class="clear"></div>
-	<div id="debug"></div>
+	<div>
+	  <p id="debug">Channel:</p>
+	  <p id="balancedebug">Balance:	</p>
+	  <p id="masterdebug">Master:</p>
+	  <p id="eqdebug">Equ:</p>
+	</div>
 </div>
 <script>
-//Channel selection knob
-$("#cs_knob").knob({
-//initialization
+$(".cs_knob").knob({
 min : 1, 
 max : 4, 
 step : 1, 
-angleOffset : -60, 
-angleArc : 120, 
+angleOffset : -90, 
+angleArc : 180, 
 stopper : true, 
 readOnly : false, 
 cursor : 20,  
@@ -212,17 +223,8 @@ this.g.arc( this.xy, this.xy, this.radius - this.lineWidth + 1 + this.lineWidth 
 this.g.stroke();
 return false;
 }},
-// change listener
 change : function(v) {
-	switch(v){
-		case(1): jQuery.get("cgi-bin/off"); break;
-		case(2): jQuery.get("cgi-bin/on"); break;
-		case(3): 
-			var value = $( "#gain span" ).slider( "option", "value" );
-			jQuery.get("cgi-bin/xmas?d=" + value); break;
-			//$("#debug").html(value); break;
-		case(4): break;
-	}
+	$("#debug").append(v);
 }
 });
 </script>
