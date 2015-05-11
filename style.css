@@ -27,14 +27,8 @@ body {
 }
 
 .vol_label {
-	height:200px;
 	float: left;
 	margin-left: 12px ;
-}
-
-.vol_label2 {
-	float: left;
-	margin-left: 144px ;
 }
 
 #balance_wrapper {
@@ -65,7 +59,7 @@ body {
 	float:left;
 	margin-left: 25px;
 }
-#gain span {
+#gainn span {
     height:200px; 
 	float:right; 
 	margin-right: 32px;

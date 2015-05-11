@@ -13,7 +13,7 @@
     // setup L master volume
 
     $( "#master_L" ).slider({
-	value: 50,
+	value: 20,
 	orientation: "horizontal",
 	range: "min",
 	animate: true,
@@ -31,7 +31,7 @@
     });
 
     $( "#master_R" ).slider({
-	value: 50,
+	value: 20,
 	orientation: "horizontal",
 	range: "min",
 	animate: true,
@@ -61,7 +61,7 @@
 	
     // setup graphic EQ
     $( "#eq1" ).slider({
-	value: 87,
+	value: 88,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
@@ -71,7 +71,7 @@
 	}
     });
     $( "#eq2" ).slider({
-	value: 76,
+	value: 77,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
@@ -81,7 +81,7 @@
 	}
     });
     $( "#eq3" ).slider({
-	value: 65,
+	value: 55,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
@@ -158,12 +158,13 @@
 		</p>
 
 		<div id="eq">
-			<span id="eq1" class="vol_label"></span>
-			<span id="eq2" class="vol_label"></span>
-			<span id="eq3" class="vol_label"></span>
-			<p class="vol_label2"></p>
-			<p class="vol_label2"></p>
-			<span id="gain" class="vol_label"></span>
+			<span id="eq1"></span>
+			<span id="eq2"></span>
+			<span id="eq3"></span>
+		</div>
+
+		<div id="gainn">
+			<span id="gain"></span>
 			<div class="clear"></div>
 		</div>
 		 
