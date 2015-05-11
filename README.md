@@ -7,7 +7,7 @@ you should start with install apache2
 
 	"sudo apt-get install apache2"
 
-then you should copy our original "www" folder to "var/www"
+then you should copy everything from webserver repo to "var/www"
 
 then add this lines below to "/etc/apache2/sites-available/000-def.conf"
 
