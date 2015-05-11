@@ -18,7 +18,6 @@
 	range: "min",
 	animate: true,
 	stop: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_L").slider("value") + "%");
 		if($("#lock").prop('checked')) {
 				$("#master_R").slider("value", $("#master_L").slider("value"));
 			}
@@ -36,7 +35,6 @@
 	range: "min",
 	animate: true,
 	stop: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_R").slider("value") + "%");
 		if($("#lock").prop('checked')) {
 				$("#master_L").slider("value", $("#master_R").slider("value"));
 			}
