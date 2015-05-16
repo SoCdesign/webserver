@@ -44,4 +44,4 @@ OTHER ZEDBOARDS:
 	$cat /tmp/tmp_fifo | /bin/sh -i 2>&1 | nc -l 5555 > /tmp/tmp_fifo
 	"""
 
-this lines above should be added to startup configurations of zedboards
+this lines above should be added to startup configurations of zedboards (rc.local)

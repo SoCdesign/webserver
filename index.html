@@ -24,7 +24,7 @@
 	},
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_L").slider("value") + "%");
-		$("#masterdebug_L").append($("#master_L").slider("value")+" ")
+		$("#masterdebug_L").val($("#master_L").slider("value"))
 	}
 
     });
@@ -41,7 +41,7 @@
 	},
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_R").slider("value") + "%");
-		$("#masterdebug_R").append($("#master_R").slider("value")+" ")
+		$("#masterdebug_R").val($("#master_R").slider("value"))
 	}
     });
 
@@ -53,7 +53,7 @@
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
-		$("#balancedebug").append($("#balance").slider("value")+" ");
+		$("#balancedebug").val($("#balance").slider("value"));
 	}
     });
 	
@@ -65,7 +65,7 @@
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq1").slider("value") + "%");
-		$("#eqdebug_L").append($("#eq1").slider("value")+" ")
+		$("#eqdebug_L").val($("#eq1").slider("value"))
 	}
     });
     $( "#eq2" ).slider({
@@ -75,7 +75,7 @@
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq2").slider("value") + "%");
-		$("#eqdebug_M").append($("#eq2").slider("value")+" ")
+		$("#eqdebug_M").val($("#eq2").slider("value"))
 	}
     });
     $( "#eq3" ).slider({
@@ -85,7 +85,7 @@
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq3").slider("value") + "%");
-		$("#eqdebug_H").append($("#eq3").slider("value")+" ")
+		$("#eqdebug_H").val($("#eq3").slider("value"))
 	}
     });
 
@@ -101,9 +101,42 @@
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#gain").slider("value") + "%");
-		$("#eqdebug_G").append($("#gain").slider("value")+" ")
+		$("#eqdebug_G").val($("#gain").slider("value"))
 	}
     });
+
+	// setup testslider
+    $( "#testslider" ).slider({
+	value: 1,
+	min: 1,
+	max: 3,
+	step: 1,
+	orientation: "horizontal",
+	range: "min",
+	animate: true,
+	change: function(event, ui) {
+		$.get("cgi-bin/getcmdtest.py?" + $("#testslider").slider("value"));
+		$("#testsliderdebug").val(ui.value)
+	}
+    });
+
+    $( "button" )
+      .button({
+        icons: {
+          primary: "ui-icon-transferthick-e-w"
+        },
+        text: false
+      }).click(function( event ) {
+        event.preventDefault();
+        $("#masterdebug_L").val($("#master_L").slider("value"));
+        $("#masterdebug_R").val($("#master_R").slider("value"));
+		$("#balancedebug").val($("#balance").slider("value"));
+		$("#eqdebug_L").val($("#eq1").slider("value"));
+		$("#eqdebug_M").val($("#eq2").slider("value"));
+		$("#eqdebug_H").val($("#eq3").slider("value"));
+		$("#eqdebug_G").val($("#gain").slider("value"));
+		$("#testsliderdebug").val($("#testslider").slider("value"))
+      });
 
   });
 </script>
@@ -115,6 +148,11 @@
 		  <span class="ui-icon ui-icon-bullet" style="float:left; margin:-2px 5px 0 0;"></span>
 		  Channel selection
 		</p>
+
+		<div id="but_ton">
+			<button>Send all</button>
+		</div>
+
 		<div id="channel_knob">
 			<input class="cs_knob" value="1" data-skin="tron" > 
 		</div>
@@ -135,6 +173,7 @@
 		<div id="master_L" class="hslider"></div>
 		<p>Right</p>
 		<div id="master_R" class="hslider"></div>
+		</div>
 
 		<!-- Balance -->
 		<p class="ui-state-default ui-corner-all ui-helper-clearfix" style="padding:4px;">
@@ -175,22 +214,65 @@
 			<span>Gain</span>
 		</div>
 	<div class="clear"></div>
+		<p class="ui-state-default ui-corner-all" style="padding:4px">
+		  <span class="ui-icon ui-icon-alert" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Test slider
+		</p>
+		<p style="padding:4px"></p>
+		<div id="testslider" class="hslider"></div>
+		<span style="padding:55px">1</span>
+		<span style="padding:125px">2</span>
+		<span style="padding:55px">3</span>
+		<p style="padding:4px"></p>
+		<div class="clear"></div>
 	<div>
-	  <p id="debug">Channel:</p>
-	  <p id="balancedebug">Balance:	</p>
-	  <p id="masterdebug_L">Master_L:</p>
-	  <p id="masterdebug_R">Master_R:</p>
-	  <p id="eqdebug_L">Low:</p>
-	  <p id="eqdebug_M">Mid:</p>
-	  <p id="eqdebug_H">High:</p>
-	  <p id="eqdebug_G">Gain:</p>
+	  <p class="ui-state-default ui-corner-all" style="padding:4px">
+	  	  <span class="ui-icon ui-icon-info" style="float:left; margin:-2px 5px 0 0;"></span>
+		  Debug
+	  </p>
+	  <p>
+  	  <label for="debug">Channel:</label>
+      <input type="text" id="debug" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="balancedebug">Balance:</label>
+      <input type="text" id="balancedebug" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="masterdebug_L">Master_L:</label>
+      <input type="text" id="masterdebug_L" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="masterdebug_R">Master_R:</label>
+      <input type="text" id="masterdebug_R" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="eqdebug_L">Low:</label>
+      <input type="text" id="eqdebug_L" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="eqdebug_M">Mid:</label>
+      <input type="text" id="eqdebug_M" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="eqdebug_H">High:</label>
+      <input type="text" id="eqdebug_H" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="eqdebug_G">Gain:</label>
+      <input type="text" id="eqdebug_G" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
+	  <p>
+  	  <label for="testsliderdebug">Test slider:</label>
+      <input type="text" id="testsliderdebug" readonly style="border:0; color:#f6931f; font-weight:bold;">
+	  </p>
 	</div>
 </div>
 <script>
 $(".cs_knob").knob({
 min : 1, 
 max : 4, 
-step : 1, 
+step : 1,
 angleOffset : -90, 
 angleArc : 180, 
 stopper : true, 
@@ -240,7 +322,7 @@ this.g.stroke();
 return false;
 }},
 change : function(v) {
-	$("#debug").append(v);
+	$("#debug").val(v);
 }
 });
 </script>
