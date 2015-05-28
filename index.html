@@ -59,7 +59,10 @@
 	
     // setup graphic EQ
     $( "#eq1" ).slider({
-	value: 88,
+	value: 800,
+	min: 100,
+	max: 1000,
+	step: 100,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
@@ -69,17 +72,23 @@
 	}
     });
     $( "#eq2" ).slider({
-	value: 77,
+	values: [3000,7000],
+	min: 1000,
+	max: 10000,
+	step: 1000,
 	orientation: "vertical",
-	range: "min",
+	range: true,
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq2").slider("value") + "%");
-		$("#eqdebug_M").val($("#eq2").slider("value"))
+		$("#eqdebug_M").val($("#eq2").slider("values", 0) + "-" + $("#eq2").slider("values", 1))
 	}
     });
     $( "#eq3" ).slider({
-	value: 55,
+	value: 15000,
+	min: 10000,
+	max: 20000,
+	step: 1000,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
@@ -132,7 +141,7 @@
         $("#masterdebug_R").val($("#master_R").slider("value"));
 		$("#balancedebug").val($("#balance").slider("value"));
 		$("#eqdebug_L").val($("#eq1").slider("value"));
-		$("#eqdebug_M").val($("#eq2").slider("value"));
+		$("#eqdebug_M").val($("#eq2").slider("values", 0) + "-" + $("#eq2").slider("values", 1));
 		$("#eqdebug_H").val($("#eq3").slider("value"));
 		$("#eqdebug_G").val($("#gain").slider("value"));
 		$("#testsliderdebug").val($("#testslider").slider("value"))
