@@ -90,7 +90,7 @@
 	max: 20000,
 	step: 1000,
 	orientation: "vertical",
-	range: "min",
+	range: "max",
 	animate: true,
 	change: function(event, ui) {
 		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq3").slider("value") + "%");
