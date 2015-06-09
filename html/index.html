@@ -67,7 +67,7 @@
 	range: "min",
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq1").slider("value") + "%");
+		$.get("cgi-bin/getcmd.py?low=" + $("#eq1").slider("value"));
 		$("#eqdebug_L").val($("#eq1").slider("value"))
 	}
     });
@@ -80,7 +80,7 @@
 	range: true,
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq2").slider("value") + "%");
+		$.get("cgi-bin/getcmd.py?band=" + $("#eq2").slider("values", 0) + "=" + $("#eq2").slider("values", 1));
 		$("#eqdebug_M").val($("#eq2").slider("values", 0) + "-" + $("#eq2").slider("values", 1))
 	}
     });
@@ -93,7 +93,7 @@
 	range: "max",
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#eq3").slider("value") + "%");
+		$.get("cgi-bin/getcmd.py?high=" + $("#eq3").slider("value"));
 		$("#eqdebug_H").val($("#eq3").slider("value"))
 	}
     });
