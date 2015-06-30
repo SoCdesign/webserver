@@ -23,7 +23,7 @@
 			}
 	},
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_L").slider("value") + "%");
+		$.get("test2.py/cmd?left=" + $("#master_L").slider("value"));
 		$("#masterdebug_L").val($("#master_L").slider("value"))
 	}
 
@@ -40,60 +40,62 @@
 			}
 	},
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#master_R").slider("value") + "%");
+		$.get("test2.py/cmd?right=" + $("#master_R").slider("value"));
 		$("#masterdebug_R").val($("#master_R").slider("value"))
 	}
     });
 
 	// setup balance
     $( "#balance" ).slider({
-	value: 50,
+	value: 16,
+	min: 0,
+	max: 32,
 	orientation: "horizontal",
 	range: "min",
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?sudo amixer -D default set Master " + $("#balance").slider("value") + "%");
+		$.get("test2.py/cmd?bal=" + $("#balance").slider("value"));
 		$("#balancedebug").val($("#balance").slider("value"));
 	}
     });
 	
     // setup graphic EQ
     $( "#eq1" ).slider({
-	value: 800,
-	min: 100,
-	max: 1000,
-	step: 100,
+	value: 500,
+	min: 0,
+	max: 5000,
+	step: 50,
 	orientation: "vertical",
 	range: "min",
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?low=" + $("#eq1").slider("value"));
+		$.get("test.py/cmd?low=" + $("#eq1").slider("value"));
 		$("#eqdebug_L").val($("#eq1").slider("value"))
 	}
     });
     $( "#eq2" ).slider({
-	values: [3000,7000],
-	min: 1000,
-	max: 10000,
-	step: 1000,
+	values: [1000,3000],
+	min: 0,
+	max: 5000,
+	step: 50,
 	orientation: "vertical",
 	range: true,
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?band=" + $("#eq2").slider("values", 0) + "=" + $("#eq2").slider("values", 1));
+		$.get("test.py/cmd?band=" + $("#eq2").slider("values", 0) + "=" + $("#eq2").slider("values", 1));
 		$("#eqdebug_M").val($("#eq2").slider("values", 0) + "-" + $("#eq2").slider("values", 1))
 	}
     });
     $( "#eq3" ).slider({
-	value: 15000,
-	min: 10000,
-	max: 20000,
-	step: 1000,
+	value: 4000,
+	min: 0,
+	max: 5000,
+	step: 50,
 	orientation: "vertical",
 	range: "max",
 	animate: true,
 	change: function(event, ui) {
-		$.get("cgi-bin/getcmd.py?high=" + $("#eq3").slider("value"));
+		$.get("test.py/cmd?high=" + $("#eq3").slider("value"));
 		$("#eqdebug_H").val($("#eq3").slider("value"))
 	}
     });
@@ -129,6 +131,7 @@
 	}
     });
 
+
     $( "button" )
       .button({
         icons: {
@@ -137,15 +140,37 @@
         text: false
       }).click(function( event ) {
         event.preventDefault();
-        $("#masterdebug_L").val($("#master_L").slider("value"));
-        $("#masterdebug_R").val($("#master_R").slider("value"));
-		$("#balancedebug").val($("#balance").slider("value"));
-		$("#eqdebug_L").val($("#eq1").slider("value"));
-		$("#eqdebug_M").val($("#eq2").slider("values", 0) + "-" + $("#eq2").slider("values", 1));
-		$("#eqdebug_H").val($("#eq3").slider("value"));
-		$("#eqdebug_G").val($("#gain").slider("value"));
-		$("#testsliderdebug").val($("#testslider").slider("value"))
+        $a = "0";
+        $b = "0";
+        $c = "0";
+        $d = "0";
+        $e = "0";
+        $f = "0";
+        if($("#low_lock").prop('checked')) {
+				$a = "1";
+			};
+		if($("#band_lock").prop('checked')) {
+				$b = "1";
+			};
+		if($("#high_lock").prop('checked')) {
+				$c = "1";
+			};
+		if($("#balance_lock").prop('checked')) {
+				$d = "1";
+			};
+		if($("#filter_lock").prop('checked')) {
+				$e = "1";
+			};
+		if($("#pregain_lock").prop('checked')) {
+				$f = "1";
+			};
+		$.get("test3.py/cmd?" + $a + "=" + $b + "=" + $c + "=" + $d + "=" + $e + "=" + $f);
+		$("#balancedebug").val($a);
+        $("#masterdebug_L").val($b);
+        $("#masterdebug_R").val($c);
       });
+
+
 
   });
 </script>
@@ -161,6 +186,38 @@
 		<div id="but_ton">
 			<button>Send all</button>
 		</div>
+
+		<span id="lock_wrapper" style="float: right; margin:10px 50px 0 0">
+			<input id="high_lock" type="checkbox" checked/>
+			<span style="">High</span>
+		</span>
+
+		<span id="lock_wrapper" style="float: right">
+			<input id="band_lock" type="checkbox" checked/>
+			<span style="">Band</span>
+		</span>
+
+		<span id="lock_wrapper" style="float: right">
+			<input id="low_lock" type="checkbox" checked/>
+			<span style="">Low</span>
+		</span>
+
+		<div class="clear"></div>
+
+		<span id="lock_wrapper" style="float: right">
+			<input id="pregain_lock" type="checkbox" checked/>
+			<span style="">Enable Pregain</span>
+		</span>
+
+		<span id="lock_wrapper" style="float: right">
+			<input id="filter_lock" type="checkbox" checked/>
+			<span style="">Enable Filter</span>
+		</span>
+
+		<span id="lock_wrapper" style="float: right">
+			<input id="balance_lock" type="checkbox" checked/>
+			<span style="">Enable Balance</span>
+		</span>
 
 		<div id="channel_knob">
 			<input class="cs_knob" value="1" data-skin="tron" > 
